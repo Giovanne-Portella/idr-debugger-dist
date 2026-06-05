@@ -1,29 +1,18 @@
-# =============================================================================
-# Desinstalador do IDR Debugger
-#
-# Remove a entrada da policy de cada navegador (HKLM). Na proxima reabertura,
-# o Chrome/Edge/etc desinstala a extensao automaticamente.
-# Requer admin - se nao estiver elevado, relanca com UAC.
-# =============================================================================
-
 $ErrorActionPreference = 'Stop'
 
-# --- Auto-elevacao -----------------------------------------------------------
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
     [Security.Principal.WindowsBuiltInRole]::Administrator
 )
 if (-not $isAdmin) {
-    Write-Host ""
-    Write-Host "Esta operacao requer permissao de administrador." -ForegroundColor Yellow
-    Write-Host "Uma janela de UAC vai aparecer — clique em SIM para continuar." -ForegroundColor Yellow
-    Write-Host ""
+    Write-Host ''
+    Write-Host 'Esta operacao requer permissao de administrador.' -ForegroundColor Yellow
+    Write-Host 'Uma janela de UAC vai aparecer -- clique em SIM para continuar.' -ForegroundColor Yellow
+    Write-Host ''
     $scriptPath = $MyInvocation.MyCommand.Path
     if (-not $scriptPath) { $scriptPath = $PSCommandPath }
-    Start-Process powershell -Verb RunAs -Wait `
-        -ArgumentList "-NoExit -ExecutionPolicy Bypass -File `"$scriptPath`""
+    Start-Process powershell -Verb RunAs -Wait -ArgumentList ('-NoExit -ExecutionPolicy Bypass -File "' + $scriptPath + '"')
     exit
 }
-# -----------------------------------------------------------------------------
 
 $EXTENSION_ID = 'edopokmfofednhgnjdcjhgdjdgdglbdn'
 
@@ -34,14 +23,14 @@ $browsers = @(
     @{ Name = 'Opera';          Path = 'HKLM:\Software\Policies\Opera Software\Opera Stable' }
 )
 
-Write-Host ""
-Write-Host "Removendo IDR Debugger da policy..." -ForegroundColor Cyan
-Write-Host ""
+Write-Host ''
+Write-Host 'Removendo IDR Debugger da policy...' -ForegroundColor Cyan
+Write-Host ''
 
 foreach ($b in $browsers) {
     $forcePath = Join-Path $b.Path 'ExtensionInstallForcelist'
     if (-not (Test-Path $forcePath)) {
-        Write-Host "  [PULAR] $($b.Name) - nao tinha policy"
+        Write-Host ('  [PULAR] ' + $b.Name + ' - nao tinha policy')
         continue
     }
     try {
@@ -49,7 +38,7 @@ foreach ($b in $browsers) {
         $removed = $false
         foreach ($name in $entries.Property) {
             $val = (Get-ItemProperty -Path $forcePath -Name $name).$name
-            if ($val -like "$EXTENSION_ID;*") {
+            if ($val -like ($EXTENSION_ID + ';*')) {
                 Remove-ItemProperty -Path $forcePath -Name $name
                 $removed = $true
             }
@@ -59,17 +48,17 @@ foreach ($b in $browsers) {
             Remove-Item $forcePath -Force
         }
         if ($removed) {
-            Write-Host "  [OK] $($b.Name)" -ForegroundColor Green
+            Write-Host ('  [OK] ' + $b.Name) -ForegroundColor Green
         } else {
-            Write-Host "  [PULAR] $($b.Name) - nao havia entrada do IDR Debugger"
+            Write-Host ('  [PULAR] ' + $b.Name + ' - nao havia entrada do IDR Debugger')
         }
     } catch {
-        Write-Host "  [ERRO] $($b.Name) - $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host ('  [ERRO] ' + $b.Name + ' - ' + $_.Exception.Message) -ForegroundColor Red
     }
 }
 
-Write-Host ""
-Write-Host "Pronto!" -ForegroundColor Green
-Write-Host "Reabra o(s) navegador(es). A extensao sera desinstalada automaticamente."
-Write-Host ""
-Read-Host "Pressione Enter para fechar"
+Write-Host ''
+Write-Host 'Pronto!' -ForegroundColor Green
+Write-Host 'Reabra o(s) navegador(es). A extensao sera desinstalada automaticamente.'
+Write-Host ''
+Read-Host 'Pressione Enter para fechar'
