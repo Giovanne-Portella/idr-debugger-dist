@@ -1,14 +1,11 @@
 # =============================================================================
 # Instalador do IDR Debugger via policy do Windows (HKLM)
 #
-# Escreve em HKLM\Software\Policies - requer admin. Se o script nao for
-# iniciado como admin, ele se relancarado com "Executar como Administrador"
-# automaticamente (o UAC vai pedir a senha/confirmacao).
+# Escreve em HKLM\Software\Policies - requer admin. Se nao estiver elevado,
+# relanca com UAC automaticamente e aguarda a conclusao.
 #
 # Uso:
 #   .\install-idr-debugger.ps1
-#
-# Pra desinstalar: rode uninstall-idr-debugger.ps1
 # =============================================================================
 
 $ErrorActionPreference = 'Stop'
@@ -18,8 +15,14 @@ $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIden
     [Security.Principal.WindowsBuiltInRole]::Administrator
 )
 if (-not $isAdmin) {
-    Write-Host "Requerendo permissao de administrador..." -ForegroundColor Yellow
-    Start-Process powershell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    Write-Host ""
+    Write-Host "Esta operacao requer permissao de administrador." -ForegroundColor Yellow
+    Write-Host "Uma janela de UAC vai aparecer — clique em SIM para continuar." -ForegroundColor Yellow
+    Write-Host ""
+    $scriptPath = $MyInvocation.MyCommand.Path
+    if (-not $scriptPath) { $scriptPath = $PSCommandPath }
+    Start-Process powershell -Verb RunAs -Wait `
+        -ArgumentList "-NoExit -ExecutionPolicy Bypass -File `"$scriptPath`""
     exit
 }
 # -----------------------------------------------------------------------------
@@ -36,6 +39,7 @@ $browsers = @(
 
 $value = "$EXTENSION_ID;$UPDATE_URL"
 
+Write-Host ""
 Write-Host "Instalando IDR Debugger via policy (HKLM)..." -ForegroundColor Cyan
 Write-Host "Extension ID: $EXTENSION_ID"
 Write-Host "Update URL:   $UPDATE_URL"
@@ -55,13 +59,12 @@ foreach ($b in $browsers) {
 }
 
 Write-Host ""
-Write-Host "Pronto." -ForegroundColor Cyan
-Write-Host "Feche e reabra o(s) navegador(es) que voce usa. A extensao sera"
-Write-Host "instalada automaticamente em ate ~1 minuto apos a reabertura."
+Write-Host "Pronto!" -ForegroundColor Green
 Write-Host ""
-Write-Host "Pra verificar:"
-Write-Host "  chrome://extensions/  (procure Mapeador de Jornada - IDR Studio)"
+Write-Host "Feche e reabra o(s) navegador(es) que voce usa."
+Write-Host "A extensao sera instalada automaticamente em ate ~1 minuto."
 Write-Host ""
-Write-Host "Pra desinstalar mais tarde, rode uninstall-idr-debugger.ps1"
+Write-Host "Pra verificar: chrome://extensions/"
+Write-Host "               (procure Mapeador de Jornada - IDR Studio)"
 Write-Host ""
-pause
+Read-Host "Pressione Enter para fechar"
