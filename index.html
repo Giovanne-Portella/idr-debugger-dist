@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IDR Debugger — Instalar</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 40px; max-width: 480px; width: 90%; text-align: center; }
+  .logo { font-size: 48px; margin-bottom: 16px; }
+  h1 { font-size: 22px; font-weight: 700; color: #f7fafc; margin-bottom: 8px; }
+  .version { font-size: 13px; color: #718096; margin-bottom: 24px; }
+  .description { font-size: 14px; color: #a0aec0; line-height: 1.6; margin-bottom: 32px; }
+  .btn { display: inline-block; background: #4f6ef7; color: #fff; font-size: 15px; font-weight: 600; padding: 14px 32px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+  .btn:hover { background: #3d5ae0; }
+  .note { font-size: 12px; color: #4a5568; margin-top: 20px; line-height: 1.5; }
+  .steps { text-align: left; background: #0f1117; border-radius: 8px; padding: 16px 20px; margin-bottom: 28px; }
+  .steps li { font-size: 13px; color: #a0aec0; margin-bottom: 8px; padding-left: 4px; }
+  .steps li:last-child { margin-bottom: 0; }
+  .prereq { font-size: 12px; color: #e53e3e; background: #2d1515; border-radius: 6px; padding: 10px 14px; margin-bottom: 24px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🔍</div>
+  <h1>Mapeador de Jornada — IDR Studio</h1>
+  <div class="version">v2.2.0</div>
+  <div class="prereq">
+    <strong>Antes de instalar:</strong> execute o script de instalacao de politicas na sua maquina (necessario uma vez, requer admin).
+  </div>
+  <ol class="steps">
+    <li>Clique no botao abaixo</li>
+    <li>Na janela do Chrome, clique <strong>"Adicionar extensao"</strong></li>
+    <li>A extensao aparece na barra de ferramentas — pronto!</li>
+  </ol>
+  <a class="btn" href="idr-debugger-2.2.0.crx">Instalar IDR Debugger</a>
+  <div class="note">
+    Atualizacoes sao automaticas.<br>
+    Para desinstalar: <code>chrome://extensions</code> → remover extensao.
+  </div>
+</div>
+</body>
+</html>
