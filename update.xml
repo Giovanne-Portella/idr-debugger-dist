@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    Manifest de auto-update do Chrome pra extensao IDR Debugger.
+
+    O Chrome periodicamente faz GET nesta URL e compara o `version` deste arquivo
+    com a versao instalada. Se a daqui for maior, ele baixa o `codebase` (.crx),
+    valida a assinatura contra o ID `appid` e instala silenciosamente.
+
+    Pra hospedar: subir este arquivo + o .crx em uma URL publica (GitHub Pages,
+    storage.robbu.global, etc) e referenciar a URL DESTE arquivo na policy do
+    Windows (HKCU\Software\Policies\Google\Chrome\ExtensionInstallForcelist).
+
+    A cada release:
+      1. Roda tools\build-crx.ps1 → gera dist\idr-debugger-X.Y.Z.crx
+      2. Sobe o .crx pro host (URL fixa ou versionada)
+      3. Edita aqui: version="X.Y.Z" e codebase="URL do .crx"
+      4. Sobe este update.xml pro mesmo host
+
+    Documentacao oficial:
+    https://developer.chrome.com/docs/extensions/mv3/external_extensions/
+-->
+<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
+    <app appid='edopokmfofednhgnjdcjhgdjdgdglbdn'>
+        <updatecheck
+            codebase='https://giovanne-portella.github.io/idr-debugger-dist/idr-debugger-2.2.0.crx'
+            version='2.2.0' />
+    </app>
+</gupdate>
