@@ -1,20 +1,31 @@
 # =============================================================================
 # Desinstalador do IDR Debugger
 #
-# Remove a entrada da policy de cada navegador. Na proxima reabertura, o
-# Chrome/Edge/etc detecta que a policy sumiu e desinstala a extensao
-# automaticamente.
+# Remove a entrada da policy de cada navegador (HKLM). Na proxima reabertura,
+# o Chrome/Edge/etc detecta que a policy sumiu e desinstala a extensao.
+# Requer admin - se nao estiver elevado, se relanca automaticamente.
 # =============================================================================
 
 $ErrorActionPreference = 'Stop'
 
+# --- Auto-elevacao -----------------------------------------------------------
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+    [Security.Principal.WindowsBuiltInRole]::Administrator
+)
+if (-not $isAdmin) {
+    Write-Host "Requerendo permissao de administrador..." -ForegroundColor Yellow
+    Start-Process powershell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`""
+    exit
+}
+# -----------------------------------------------------------------------------
+
 $EXTENSION_ID = 'edopokmfofednhgnjdcjhgdjdgdglbdn'
 
 $browsers = @(
-    @{ Name = 'Google Chrome';  Path = 'HKCU:\Software\Policies\Google\Chrome' },
-    @{ Name = 'Microsoft Edge'; Path = 'HKCU:\Software\Policies\Microsoft\Edge' },
-    @{ Name = 'Brave';          Path = 'HKCU:\Software\Policies\BraveSoftware\Brave' },
-    @{ Name = 'Opera';          Path = 'HKCU:\Software\Policies\Opera Software\Opera Stable' }
+    @{ Name = 'Google Chrome';  Path = 'HKLM:\Software\Policies\Google\Chrome' },
+    @{ Name = 'Microsoft Edge'; Path = 'HKLM:\Software\Policies\Microsoft\Edge' },
+    @{ Name = 'Brave';          Path = 'HKLM:\Software\Policies\BraveSoftware\Brave' },
+    @{ Name = 'Opera';          Path = 'HKLM:\Software\Policies\Opera Software\Opera Stable' }
 )
 
 Write-Host "Removendo IDR Debugger da policy..." -ForegroundColor Cyan
@@ -54,3 +65,5 @@ Write-Host ""
 Write-Host "Pronto." -ForegroundColor Cyan
 Write-Host "Reabra o(s) navegador(es). A extensao sera desinstalada automaticamente"
 Write-Host "na proxima reabertura."
+Write-Host ""
+pause
