@@ -23,11 +23,10 @@ Write-Host ""
 foreach ($b in $browsers) {
     $forcePath = Join-Path $b.Path 'ExtensionInstallForcelist'
     if (-not (Test-Path $forcePath)) {
-        Write-Host "  [PULAR] $($b.Name) — nao tinha policy"
+        Write-Host "  [PULAR] $($b.Name) - nao tinha policy"
         continue
     }
     try {
-        # Procura todos os values cujo conteudo comece com o nosso ID
         $entries = Get-Item $forcePath
         $removed = $false
         foreach ($name in $entries.Property) {
@@ -37,7 +36,6 @@ foreach ($b in $browsers) {
                 $removed = $true
             }
         }
-        # Se a chave ficou vazia, remove ela tambem
         $entries = Get-Item $forcePath
         if (-not $entries.Property -or $entries.Property.Count -eq 0) {
             Remove-Item $forcePath -Force
@@ -45,10 +43,10 @@ foreach ($b in $browsers) {
         if ($removed) {
             Write-Host "  [OK] $($b.Name)" -ForegroundColor Green
         } else {
-            Write-Host "  [PULAR] $($b.Name) — nao havia entrada do IDR Debugger"
+            Write-Host "  [PULAR] $($b.Name) - nao havia entrada do IDR Debugger"
         }
     } catch {
-        Write-Host "  [ERRO] $($b.Name) — $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "  [ERRO] $($b.Name) - $($_.Exception.Message)" -ForegroundColor Red
     }
 }
 
