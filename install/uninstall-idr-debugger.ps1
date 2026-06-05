@@ -10,7 +10,7 @@ if (-not $isAdmin) {
     Write-Host ''
     $scriptPath = $MyInvocation.MyCommand.Path
     if (-not $scriptPath) { $scriptPath = $PSCommandPath }
-    Start-Process powershell -Verb RunAs -Wait -ArgumentList ('-NoExit -ExecutionPolicy Bypass -File "' + $scriptPath + '"')
+    Start-Process powershell -Verb RunAs -Wait -ArgumentList ('-ExecutionPolicy Bypass -File "' + $scriptPath + '"')
     exit
 }
 
