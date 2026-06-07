@@ -14,50 +14,32 @@ if (-not $isAdmin) {
     exit
 }
 
-$EXTENSION_ID  = 'edopokmfofednhgnjdcjhgdjdgdglbdn'
-$UPDATE_URL    = 'https://giovanne-portella.github.io/idr-debugger-dist/update.xml'
-$INSTALL_PAGE  = 'https://giovanne-portella.github.io/idr-debugger-dist/'
-$INSTALL_SOURCE = 'https://giovanne-portella.github.io/*'
+$EXTENSION_ID = 'chjppnjbcimagfgoimogjojchfjlnifl'
+$UPDATE_URL   = 'https://clients2.google.com/service/update2/crx'
 
 Write-Host ''
-Write-Host 'Configurando IDR Debugger para instalacao...' -ForegroundColor Cyan
+Write-Host 'Instalando IDR Debugger via policy...' -ForegroundColor Cyan
 Write-Host ''
 
-# --- 1. ExtensionInstallForcelist (tentativa automatica) --------------------
-$forcePath = 'HKLM:\Software\Policies\Google\Chrome\ExtensionInstallForcelist'
-try {
-    if (-not (Test-Path $forcePath)) { New-Item -Path $forcePath -Force | Out-Null }
-    Set-ItemProperty -Path $forcePath -Name '1' -Value ($EXTENSION_ID + ';' + $UPDATE_URL) -Type String
-    Write-Host '[1/3] ExtensionInstallForcelist configurado' -ForegroundColor Green
-} catch {
-    Write-Host ('[1/3] ExtensionInstallForcelist - SKIP: ' + $_.Exception.Message) -ForegroundColor Yellow
-}
+$browsers = @(
+    @{ Name = 'Google Chrome';  Path = 'HKLM:\Software\Policies\Google\Chrome\ExtensionInstallForcelist' },
+    @{ Name = 'Microsoft Edge'; Path = 'HKLM:\Software\Policies\Microsoft\Edge\ExtensionInstallForcelist' },
+    @{ Name = 'Brave';          Path = 'HKLM:\Software\Policies\BraveSoftware\Brave\ExtensionInstallForcelist' },
+    @{ Name = 'Opera';          Path = 'HKLM:\Software\Policies\Opera Software\Opera Stable\ExtensionInstallForcelist' }
+)
 
-# --- 2. ExtensionInstallSources (permite instalar pelo site) ----------------
-$srcPath = 'HKLM:\Software\Policies\Google\Chrome\ExtensionInstallSources'
-try {
-    if (-not (Test-Path $srcPath)) { New-Item -Path $srcPath -Force | Out-Null }
-    Set-ItemProperty -Path $srcPath -Name '1' -Value $INSTALL_SOURCE -Type String
-    Write-Host '[2/3] ExtensionInstallSources configurado' -ForegroundColor Green
-} catch {
-    Write-Host ('[2/3] ExtensionInstallSources - SKIP: ' + $_.Exception.Message) -ForegroundColor Yellow
-}
-
-# --- 3. Edge (mesmo mecanismo) -----------------------------------------------
-$edgeSrcPath = 'HKLM:\Software\Policies\Microsoft\Edge\ExtensionInstallSources'
-try {
-    if (-not (Test-Path $edgeSrcPath)) { New-Item -Path $edgeSrcPath -Force | Out-Null }
-    Set-ItemProperty -Path $edgeSrcPath -Name '1' -Value $INSTALL_SOURCE -Type String
-    Write-Host '[3/3] ExtensionInstallSources (Edge) configurado' -ForegroundColor Green
-} catch {
-    Write-Host ('[3/3] Edge - SKIP: ' + $_.Exception.Message) -ForegroundColor Yellow
+foreach ($b in $browsers) {
+    try {
+        if (-not (Test-Path $b.Path)) { New-Item -Path $b.Path -Force | Out-Null }
+        Set-ItemProperty -Path $b.Path -Name '1' -Value ($EXTENSION_ID + ';' + $UPDATE_URL) -Type String
+        Write-Host ('  [OK] ' + $b.Name) -ForegroundColor Green
+    } catch {
+        Write-Host ('  [SKIP] ' + $b.Name + ' - ' + $_.Exception.Message) -ForegroundColor Yellow
+    }
 }
 
 Write-Host ''
-Write-Host 'Pronto! Agora abra o Chrome e acesse:' -ForegroundColor Green
-Write-Host ''
-Write-Host ('    ' + $INSTALL_PAGE) -ForegroundColor Cyan
-Write-Host ''
-Write-Host 'Clique em "Instalar IDR Debugger" e confirme no dialogo do Chrome.' -ForegroundColor White
+Write-Host 'Pronto! Feche e reabra o navegador.' -ForegroundColor Green
+Write-Host 'A extensao sera instalada automaticamente em alguns instantes.' -ForegroundColor White
 Write-Host ''
 Read-Host 'Pressione Enter para fechar'

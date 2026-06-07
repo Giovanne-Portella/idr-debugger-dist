@@ -14,7 +14,7 @@ if (-not $isAdmin) {
     exit
 }
 
-$EXTENSION_ID = 'edopokmfofednhgnjdcjhgdjdgdglbdn'
+$EXTENSION_ID = 'chjppnjbcimagfgoimogjojchfjlnifl'
 
 $browsers = @(
     @{ Name = 'Google Chrome';  Path = 'HKLM:\Software\Policies\Google\Chrome' },
@@ -58,7 +58,7 @@ foreach ($b in $browsers) {
 }
 
 Write-Host ''
-Write-Host 'Pronto!' -ForegroundColor Green
-Write-Host 'Reabra o(s) navegador(es). A extensao sera desinstalada automaticamente.'
+Write-Host 'Pronto! Reabra o(s) navegador(es).' -ForegroundColor Green
+Write-Host 'A extensao sera removida automaticamente.' -ForegroundColor White
 Write-Host ''
 Read-Host 'Pressione Enter para fechar'
